@@ -6,7 +6,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include "os_hw4_driver.h"
-#include <math.h>
+
 #define ENTRY(x,a,b) ((x&bitmask(a,b+1)) >> a)	//use with bitmask for bit manipulation
 
 int fd;
@@ -25,7 +25,7 @@ void get_entries(uint64_t add, uint64_t arr[])
 	arr[3] = ENTRY(add,30,38);
 	arr[4] = ENTRY(add,39,47);
 
-	return;	
+	return;
 }
 
 // Obtain my cr3 value (a.k.a. PML4 table physical address)
@@ -67,13 +67,13 @@ uint64_t addr_trans(uint64_t vadd){
 
 	uint64_t base = get_cr3_value();
 	base = (ENTRY(base, 12, 51)<<12) + arr[4]*8;	//addr of PML4E
-    base = read_physical_address(base);				//content of PML4E
-    base = (ENTRY(base, 12, 51)<<12) + arr[3]*8;	//addr of PDPE
-    base = read_physical_address(base);				//content of PDPE
-    base = (ENTRY(base, 12, 51)<<12) + arr[2]*8;	//addr of PDE
-    base = read_physical_address(base);				//content of PDE
-    base = (ENTRY(base, 12, 51)<<12) + arr[1]*8;	//addr of PTE
-	
+	base = read_physical_address(base);		//content of PML4E
+	base = (ENTRY(base, 12, 51)<<12) + arr[3]*8;	//addr of PDPE
+	base = read_physical_address(base);		//content of PDPE
+	base = (ENTRY(base, 12, 51)<<12) + arr[2]*8;	//addr of PDE
+	base = read_physical_address(base);		//content of PDE
+	base = (ENTRY(base, 12, 51)<<12) + arr[1]*8;	//addr of PTE
+
 	return base;
 }
 
@@ -103,10 +103,10 @@ int main()
 
 	uint64_t pte_addr_x = addr_trans(vir_x), pte_addr_y = addr_trans(vir_y);	
 
-    uint64_t pte_val_x = read_physical_address(pte_addr_x);	//get page table entry of x
+	uint64_t pte_val_x = read_physical_address(pte_addr_x);	//get page table entry of x
 	uint64_t pte_val_y = read_physical_address(pte_addr_y);	//get page table entry of y
 
-    write_physical_address(pte_addr_y, pte_val_x);
+	write_physical_address(pte_addr_y, pte_val_x);
 	// ------------------------------------------------
 
 	getchar();
